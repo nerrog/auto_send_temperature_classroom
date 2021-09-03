@@ -43,10 +43,10 @@ GoogleChrome(Selenium自動操作)
         └── ...
 
     ```
-4. `key.yaml`にGASのAPIのURL(`api`)、LINE NotifyのAPIキー(`line`)、Googleアカウントのメールアドレス(`gmail`)、Googleアカウントのパスワード(`pass`)をそれぞれ書き込んで保存
+4. `key.yaml`にGASのAPIのURL(`api`)、LINE NotifyのAPIキー(`line`)、Googleアカウントのメールアドレス(`gmail`)、Googleアカウントのパスワード(`pass`)、chromedriverの場所(`driver`)をそれぞれ書き込んで保存(`template.yamlを書き換えて作ると楽です`)
 5. 先生によって質問の送信方法が違うと思うので`main.py`のブラウザ操作部のソースコードを書き換える(主にxpath等の要素取得部分)
 6. `pip install -r requirements.txt`を実行する
-7. crontabやタスクスケジューラで`main.py`を任意の時間にセットする
+7. crontabやタスクスケジューラで`main.py`(`run.sh`)を任意の時間にセットする
 8. ｵﾜﾘ
 
 # さいごに
