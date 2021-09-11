@@ -5,12 +5,13 @@ from selenium.webdriver.common.keys import Keys
 from time import sleep
 import time
 import sys
+import os
 
 # LINEに結果を送信せず標準出力でエラーを受け取る用
 Debug = False
 
 # 設定ファイルオープン
-with open('../key.yaml') as file:
+with open(os.path.dirname(os.path.abspath(__file__))+'/../key.yaml') as file:
     obj = yaml.safe_load(file)
     API_URL = obj["api"]
     LINE_API = obj["line"]
