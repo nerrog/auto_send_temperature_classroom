@@ -18,6 +18,7 @@ with open(os.path.dirname(os.path.abspath(__file__))+'/../key.yaml') as file:
     GMAIL = obj["gmail"]
     G_PASS = obj["pass"]
     driverpass = obj["driver"]
+    Isheadless = obj["Isheadless"]
 
 # LINE通知用メソッド
 def send_line(message, *args):
@@ -34,19 +35,27 @@ def send_line(message, *args):
             files = {"imageFile": open(args[0], "rb")}
             requests.post(line_notify_api, data=payload, headers=headers, files=files)
 
+def screenshot(driver):
+    # 画面キャプチャ
+    width = driver.execute_script("return document.body.scrollWidth;")
+    height = driver.execute_script("return document.body.scrollHeight;")
+    driver.set_window_size(width, height)
+    driver.save_screenshot('screenshot.png')
+    return 'screenshot.png'
+
 try:
     start = time.time()
     response = requests.get(API_URL)
     jsonData = response.json()
     CLASSROOM_URL = jsonData["url"]
-    # p = pathlib.Path('UserData')
-    print(CLASSROOM_URL)
+    #print(CLASSROOM_URL)
 
     # Chrome
     options = webdriver.ChromeOptions()
-    # options.add_argument(f'--user-data-dir={p.resolve()}')
     # デプロイ時にはヘッドレスモードを推奨
-    options.add_argument('--headless')
+    if Isheadless:
+        options.add_argument('--headless')
+
     options.add_argument('--lang=ja-JP')
     options.add_argument('--disable-gpu')
     options.add_argument("--start-maximized")
@@ -79,31 +88,35 @@ try:
     #ブラウザ操作部(ここから必要に応じて変える)
     # Chromeデベロッパーツールからxpathをコピーできる
     sleep(3)
-    print(driver.page_source)
-    print(driver.current_url)
+    #print(driver.page_source)
+    #print(driver.current_url)
     # 質問のラジオボタンを選択
-    select = driver.find_element_by_css_selector(".AB7Lab.Id5V1")
-    select.click()
+    try:
+        select = driver.find_element_by_css_selector(".AB7Lab.Id5V1")
+        select.click()
+    except Exception as e:
+        mes = f"[ERROR] 質問のラジオボタン選択エラー\n既に解答済みの可能性があります\n===エラー詳細===\n{e.args}"
+        screenshot(driver)
+        send_line(mes,'screenshot.png')
+        sys.exit()
+
     sleep(1)
     # 提出ボタンを選択
     submit = driver.find_element_by_xpath("//*[@id='yDmH0d']/div[2]/div/div[4]/div[2]/div[2]/div[3]/div[2]/div[3]/div[1]")
-    print(submit.is_displayed())
+    #print(submit.is_displayed())
     submit.click()
     sleep(1)
     # 確認画面の提出ボタンを選択
     submit2 = driver.find_element_by_xpath("//*[@id='yDmH0d']/div[10]/div/div[2]/div[3]/div[2]")
-    print(submit2.is_displayed())
+    #print(submit2.is_displayed())
     submit2.click()
     sleep(3)
     elapsed_time = time.time() - start
-    width = driver.execute_script("return document.body.scrollWidth;")
-    height = driver.execute_script("return document.body.scrollHeight;")
-    driver.set_window_size(width, height)
-    driver.save_screenshot('screenshot.png')
+    screenshot(driver)
     mes = f"[OK]\n健康観察送信完了！\n実行時間:{round(elapsed_time, 1)}秒"
     send_line(mes,'screenshot.png')
 except Exception as e:
     mes = f"[ERROR] 不明なエラー\n===エラー詳細===\n{e.args}"
     send_line(mes)
-    print(mes)
+    #print(mes)
     sys.exit()
