@@ -72,7 +72,7 @@ try:
         email = driver.find_element_by_xpath("//*[@id='identifierId']|//*[@id='Email']")
         email.click()
         email.send_keys(GMAIL + Keys.ENTER )
-        sleep(2)
+        driver.implicitly_wait(5)
         pass_f = driver.find_element_by_xpath("//*[@id='password']/div[1]/div/div[1]/input")
         pass_f.click()
         pass_f.send_keys(G_PASS + Keys.ENTER )
@@ -87,7 +87,7 @@ try:
 
     #ブラウザ操作部(ここから必要に応じて変える)
     # Chromeデベロッパーツールからxpathをコピーできる
-    sleep(3)
+    driver.implicitly_wait(5)
     #print(driver.page_source)
     #print(driver.current_url)
     # 質問のラジオボタンを選択
@@ -110,7 +110,7 @@ try:
     submit2 = driver.find_element_by_xpath("//*[@id='yDmH0d']/div[10]/div/div[2]/div[3]/div[2]")
     #print(submit2.is_displayed())
     submit2.click()
-    sleep(3)
+    driver.implicitly_wait(5)
     elapsed_time = time.time() - start
     screenshot(driver)
     mes = f"[OK]\n健康観察送信完了！\n実行時間:{round(elapsed_time, 1)}秒"
