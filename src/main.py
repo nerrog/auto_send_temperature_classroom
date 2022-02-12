@@ -1,6 +1,7 @@
 import requests
 import yaml
 from selenium import webdriver
+from selenium.webdriver.chrome import service as cs
 from selenium.webdriver.common.keys import Keys
 from time import sleep
 import time
@@ -8,7 +9,7 @@ import sys
 import os
 
 # LINEに結果を送信せず標準出力でエラーを受け取る用
-Debug = False
+Debug = True
 
 # 設定ファイルオープン
 with open(os.path.dirname(os.path.abspath(__file__))+'/../key.yaml') as file:
@@ -61,7 +62,12 @@ try:
     options.add_argument("--start-maximized")
     options.add_argument('--user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36"')
 
-    driver = webdriver.Chrome(driverpass, options=options)
+    # Debug
+    if Debug:
+        driverpass = os.path.join(os.getcwd(), "chromedriver.exe")
+
+    service = cs.Service(executable_path=driverpass)
+    driver = webdriver.Chrome(service=service, options=options)
 
     driver.set_window_size('1920', '1080')
 
@@ -107,13 +113,13 @@ try:
     submit.click()
     sleep(1)
     # 確認画面の提出ボタンを選択
-    submit2 = driver.find_element_by_xpath("//*[@id='yDmH0d']/div[10]/div/div[2]/div[3]/div[2]")
+    submit2 = driver.find_element_by_xpath("//*[@id='yDmH0d']/div[9]/div/div[2]/div[3]/div[2]/span")
     #print(submit2.is_displayed())
     submit2.click()
-    driver.implicitly_wait(5)
+    time.sleep(5)
     elapsed_time = time.time() - start
     screenshot(driver)
-    mes = f"[OK]\n健康観察送信完了！\n実行時間:{round(elapsed_time, 1)}秒"
+    mes = f"[OK]\n健康観察送信完了!\n実行時間:{round(elapsed_time, 1)}秒"
     send_line(mes,'screenshot.png')
 except Exception as e:
     mes = f"[ERROR] 不明なエラー\n===エラー詳細===\n{e.args}"
