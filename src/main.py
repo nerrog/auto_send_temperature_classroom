@@ -9,7 +9,7 @@ import sys
 import os
 
 # LINEに結果を送信せず標準出力でエラーを受け取る用
-Debug = True
+Debug = False
 
 # 設定ファイルオープン
 with open(os.path.dirname(os.path.abspath(__file__))+'/../key.yaml') as file:
