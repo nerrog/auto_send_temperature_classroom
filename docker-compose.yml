@@ -1,0 +1,19 @@
+version: "3.3"
+services:
+  selenium:
+    image: selenium/standalone-chrome:107.0
+    environment:
+      - "SE_SCREEN_WIDTH=1920"
+      - "SE_SCREEN_HEIGHT=1080"
+      - "SE_SCREEN_DEPTH=24"
+      - "SE_SCREEN_DPI=96"
+  app:
+    build: .
+    command: ["gosu", "user", "python3", "src/main.py"]
+    volumes:
+      - .:/work
+    environment:
+      - "SELENIUM_URL=http://selenium:4444/wd/hub"
+      - "IS_REMOTE_DRIVER=True"
+    depends_on:
+      - selenium

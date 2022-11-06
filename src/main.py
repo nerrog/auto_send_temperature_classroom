@@ -2,6 +2,7 @@ import os
 import requests
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from time import sleep
@@ -14,7 +15,7 @@ import lib.cdriver
 import lib.utils
 
 # LINEに結果を送信せず標準出力でエラーを受け取る用
-Debug = False
+Debug = config.IS_DEBUG_MODE
 
 utils = lib.utils.utils(Debug, config.LINE_API)
 
@@ -28,7 +29,7 @@ def main():
 
         driver = lib.cdriver.generate_driver(Debug)
 
-        if type(driver) == Exception:
+        if type(driver) == Exception or type(driver) == WebDriverException:
             mes = f"[ERROR] Chrome準備エラー\n===エラー詳細===\n{driver.args}"
             utils.send_line(mes)
             sys.exit()
@@ -46,7 +47,7 @@ def main():
             pass_f.send_keys(config.G_PASS + Keys.ENTER )
             sleep(3)
         except Exception as e:
-            mes = f"[ERROR] Googleログインエラー\n===エラー詳細===\n{e.args}"
+            mes = f"[ERROR] Googleログインエラー\n===エラー詳細===\n{str(traceback.format_exc())}"
             utils.send_line(mes)
             sys.exit()
 
@@ -83,7 +84,16 @@ def main():
 
         # 確認画面の提出ボタンを選択
         submit2 = driver.find_element(By.XPATH, "//*[@id='yDmH0d']/div[9]/div/div[2]/div[3]/div[2]")
-        submit2.click()
+
+        """
+        DEBUG STOP
+        """
+        if Debug:
+            print("=== DEBUG STOP ===")
+            print("Catch submit button!")
+            sys.exit(0)
+        else:
+            submit2.click()
 
         time.sleep(5)
         elapsed_time = time.time() - start
