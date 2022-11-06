@@ -1,6 +1,0 @@
-api : "GAS API URL HERE"
-line : "LINE Notify API KEY HERE"
-gmail : "GOOGLE E-MAIL ADDRESS HERE"
-pass : "GOOGLE PASSWD HERE"
-driver : "Chrome Driver Pass Here"
-Isheadless : True

@@ -1,4 +1,6 @@
 key.yaml
+config.py
 /src/screenshot.png
 screenshot.png
 chromedriver.exe
+__pycache__
